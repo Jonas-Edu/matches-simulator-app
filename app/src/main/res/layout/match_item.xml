@@ -55,7 +55,7 @@
             app:layout_constraintTop_toTopOf="@+id/ivHomeTeam" />
 
         <ImageView
-            android:id="@+id/tvAwayTeam"
+            android:id="@+id/ivAwayTeam"
             android:layout_width="@dimen/team_image_size"
             android:layout_height="@dimen/team_image_size"
             android:layout_marginTop="@dimen/margin_default"

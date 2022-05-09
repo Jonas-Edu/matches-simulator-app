@@ -1,4 +1,4 @@
-package com.example.simulator
+package com.example.simulator.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,5 +17,6 @@ class DetailActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
     }
 }
