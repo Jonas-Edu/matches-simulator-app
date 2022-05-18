@@ -1,5 +1,7 @@
 package com.example.simulator.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -14,6 +16,7 @@ import com.example.simulator.ui.adapter.MatchesAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private MatchesApi matchesApi;
-    private RecyclerView.Adapter matchesAdapter;
+    private MatchesAdapter matchesAdapter;
 
 
     @Override
@@ -47,20 +50,38 @@ public class MainActivity extends AppCompatActivity {
         matchesApi = retrofit.create(MatchesApi.class);
     }
 
-
-
     private void setupFloatActionButon() {
-        //todo: criar evento de click e simulação de partidas
+        binding.fabSimulate.setOnClickListener(view -> {
+            view.animate().rotationBy(360).setDuration(500).setListener(new AnimatorListenerAdapter() {
+
+               @Override
+              public void onAnimationEnd(Animator animation) {
+                  super.onAnimationEnd(animation);
+                   Random random = new Random();
+                  for (int i = 0; i < matchesAdapter.getItemCount(); i++) {
+                     Match match = matchesAdapter.getMatches().get(i);
+                     match.getHomeTeam().getScore(random.nextInt(match.getHomeTeam().getStars() + 1));
+                     match.getAwayTeam().getScore(random.nextInt(match.getAwayTeam().getStars() + 1));
+                     matchesAdapter.notifyItemChanged(i);
+                   }
+               }
+            });
+        });
     }
 
     private void setupMatchesRefresh() {
-        //todo: atualizar as partidas na ação de swipe.
+        binding.srMatches.setOnRefreshListener(this::findMatchesFromAPI);
     }
 
     private void setupMatchesList() {
         binding.rvMatches.setLayoutManager(new LinearLayoutManager(this));
         binding.rvMatches.setAdapter(matchesAdapter);
         binding.rvMatches.setHasFixedSize(true);
+        findMatchesFromAPI();
+    }
+
+    private void findMatchesFromAPI() {
+        binding.srMatches.setRefreshing(true);
         matchesApi.getMatches().enqueue(new Callback<List<Match>>() {
 
 
@@ -73,13 +94,16 @@ public class MainActivity extends AppCompatActivity {
                }else {
                    showErrorMessage();
                }
+               binding.srMatches.setRefreshing(false);
            }
            @Override
            public void onFailure(Call<List<Match>> call, Throwable t) {
                showErrorMessage();
+               binding.srMatches.setRefreshing(false);
            }
        });
-}
+    }
+
     private void showErrorMessage() {
         Snackbar.make(binding.fabSimulate, com.example.simulator.R.string.error_api, Snackbar.LENGTH_LONG).show();
 

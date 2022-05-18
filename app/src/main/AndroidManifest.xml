@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.simulator" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
@@ -22,7 +21,8 @@
         <activity
             android:name=".ui.DetailActivity"
             android:exported="true"
-            android:theme="@style/Theme.Simulator.NoActionBar" />
+            android:theme="@style/Theme.Simulator.NoActionBar"
+            android:parentActivityName=".ui.MainActivity"/>
     </application>
 
 </manifest>
